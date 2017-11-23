@@ -6,11 +6,14 @@ import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QLineEdit, QVBoxLayout, QComboBox)
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QPixmap
+from pydub import AudioSegment
 
 def speech(text):
     tts= gTTS(text=text, lang='en')
     tts.save("C:/labelReadOut.mp3")
     webbrowser.open("C:/labelReadOut.mp3")
+    label = AudioSegment.from_mp3("labelReadOut.mp3")
+    label.export("C:/", format="wav")
 
 #label = ("Lorem ipsum dolor sit amet, pri ex partem nominati, eos malis nonumes phaedrum an. Est eu erat novum gloriatur, cu fuisset alienum definitiones eam. Ut error consulatu sit, possit scripta recusabo ne ius. Elitr percipitur id eam, facilisis dignissim intellegat eum et, aliquam principes ei ius. Noluisse mnesarchum complectitur ad usu, te mea paulo epicuri. Cu per fugit altera, vim putent apeirian at, sea ea tantas iudicabit.")
 #speech(label)
@@ -22,12 +25,11 @@ class Window(QWidget):
 
         my_label = QLabel(self)
         label_text = "lol"
-        speech(label_text)
+
         my_label.setText(label_text)
-
-
-
         search_button = QPushButton("Play")
+
+        search_button.clicked.connect(self.on_click)
 
 
         v_layout = QVBoxLayout()
@@ -37,6 +39,12 @@ class Window(QWidget):
 
         self.setLayout(v_layout)
         self.setWindowTitle("Speech")
+
+    @pyqtSlot()
+    def on_click(self):
+            search_button = self.sender()
+            speech(label_text)
+
 
 app = QApplication(sys.argv)
 
