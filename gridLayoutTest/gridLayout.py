@@ -69,94 +69,45 @@ image_info = [
  
 class Window(QWidget):
 
-	def __init__(self):
-		super().__init__()
-		self.title = 'PyQt5 layout - pythonspot.com'
-		self.left = 10
-		self.top = 10
-		self.width = 320
-		self.height = 100
-		self.initUI()
-	
-	def initUI(self):
-		self.setWindowTitle(self.title)
-		self.setGeometry(self.left, self.top, self.width, self.height)
- 
-		self.createGridLayout()
- 
-		windowLayout = QVBoxLayout()
-		windowLayout.addWidget(self.horizontalGroupBox)
-		self.setLayout(windowLayout)
- 
-		self.show()
+    def __init__(self):
+        super().__init__()
+        self.title = 'PyQt5 layout'
+        self.left = 10
+        self.top = 10
+        self.width = 320
+        self.height = 100
+        self.initUI()
+    
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
 
-	def createGridLayout(self):
-		self.horizontalGroupBox = QGroupBox("Grid")
-		layout = QGridLayout()
-		layout.setColumnStretch(1, 4)
-		layout.setColumnStretch(2, 4)
-		width = 200
-		
-		label = QLabel(self)
-		pixmap = QPixmap(f"{image_info[0]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label.setPixmap(pixmap)
-		
-		label1 = QLabel(self)
-		pixmap = QPixmap(f"{image_info[1]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label1.setPixmap(pixmap)
-		
-		label2 = QLabel(self)
-		pixmap = QPixmap(f"{image_info[2]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label2.setPixmap(pixmap)
-		
-		label3 = QLabel(self)
-		pixmap = QPixmap(f"{image_info[3]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label3.setPixmap(pixmap)
-		
-		label4 = QLabel(self)
-		pixmap = QPixmap(f"{image_info[4]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label4.setPixmap(pixmap)
-		
-		label5 = QLabel(self)
-		pixmap = QPixmap(f"{image_info[5]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label5.setPixmap(pixmap)
-		
-		label6 = QLabel(self)
-		pixmap = QPixmap(f"{image_info[6]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label6.setPixmap(pixmap)
-		
-		label7 = QLabel(self)
-		pixmap = QPixmap(f"{image_info[7]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label7.setPixmap(pixmap)
-		
-		label8 = QLabel(self)
-		pixmap = QPixmap(f"{image_info[8]['id']}.jpg")
-		pixmap = pixmap.scaledToWidth(width)
-		label8.setPixmap(pixmap)
-		
-		layout.addWidget(label)
-		layout.addWidget(label1)
-		layout.addWidget(label2)
-		layout.addWidget(label3)
-		layout.addWidget(label4)
-		layout.addWidget(label5)
-		layout.addWidget(label6)
-		layout.addWidget(label7)
-		layout.addWidget(label8)
+        self.createGridLayout()
 
-		self.horizontalGroupBox.setLayout(layout)
- 
- 
- 
+        windowLayout = QVBoxLayout()
+        windowLayout.addWidget(self.horizontalGroupBox)
+        self.setLayout(windowLayout)
+
+        self.show()
+
+    def createGridLayout(self):
+        self.horizontalGroupBox = QGroupBox("Grid")
+        layout = QGridLayout()
+        layout.setColumnStretch(1, 4)
+        layout.setColumnStretch(2, 4)
+        width = 200
+        for x in range(0, 9):
+            label = QLabel(self)
+            image_id = image_info[x]['id']
+            pixmap = QPixmap(f"{image_id}.jpg")
+            pixmap = pixmap.scaledToWidth(width)
+            label.setPixmap(pixmap)
+            layout.addWidget(label)
+        
+
+        self.horizontalGroupBox.setLayout(layout)
+
 if __name__ == '__main__':
-	app = QApplication(sys.argv)
-	ex = Window()
-	sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    ex = Window()
+    sys.exit(app.exec_())
