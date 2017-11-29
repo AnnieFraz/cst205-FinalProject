@@ -10,7 +10,7 @@ from PyQt5.QtCore import pyqtSlot
 
 
 def speech(text):
-    tts= gTTS(text=text, lang='en-us', slow=True)
+    tts= gTTS(text=text, lang='fr', slow=True)
     tts.save("C:/labelReadOut.wav")
     webbrowser.open("C:/Users/HP/PycharmProjects/TeamProject/labelReadOut.wav")
     #label = pydub.AudioSegment.from_mp3("labelReadOut.mp3")
