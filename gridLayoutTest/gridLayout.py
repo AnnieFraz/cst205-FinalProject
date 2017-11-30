@@ -1,7 +1,8 @@
 import sys, math
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QGridLayout, QLineEdit, QHBoxLayout, QVBoxLayout, QComboBox, QGroupBox)
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QSize
 from PyQt5.QtGui import QPixmap, QIcon
+from random import randint
 from PIL import Image
  
 image_info = [
@@ -83,28 +84,43 @@ class Window(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.createGridLayout()
+        txtToSpBtn = QPushButton("Activate Text To Speech")
+        submitBtn = QPushButton("Submit")
+        resetBtn = QPushButton("Reset Images")
 
         windowLayout = QVBoxLayout()
+        windowLayout.addWidget(txtToSpBtn)
         windowLayout.addWidget(self.horizontalGroupBox)
+        windowLayout.addWidget(submitBtn)
+        windowLayout.addWidget(resetBtn)
         self.setLayout(windowLayout)
 
+        resetBtn.clicked.connect(self.on_reset)
+        
         self.show()
 
+    @pyqtSlot()
+    def on_reset(self):
+        print("Resetting")
+        self.createGridLayout()
+            
+            	
     def createGridLayout(self):
         self.horizontalGroupBox = QGroupBox("Grid")
         layout = QGridLayout()
         layout.setColumnStretch(1, 4)
         layout.setColumnStretch(2, 4)
-        width = 200
+        width = 150
         for x in range(0, 9):
-            label = QLabel(self)
-            image_id = image_info[x]['id']
+            icon = QIcon()
+            image_id = image_info[randint(0,9)]['id']
             pixmap = QPixmap(f"{image_id}.jpg")
-            pixmap = pixmap.scaledToWidth(width)
-            label.setPixmap(pixmap)
-            layout.addWidget(label)
+            icon.addPixmap(pixmap)
+            button = QPushButton()
+            button.setIcon(icon)
+            button.setIconSize(QSize(width,width))
+            layout.addWidget(button)
         
-
         self.horizontalGroupBox.setLayout(layout)
 
 if __name__ == '__main__':
