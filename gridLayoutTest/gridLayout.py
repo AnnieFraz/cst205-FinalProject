@@ -4,7 +4,19 @@ from PyQt5.QtCore import pyqtSlot, QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from random import randint
 from PIL import Image
- 
+
+from imgurpython import ImgurClient
+
+import webbrowser
+
+from gtts import gTTS
+import os
+
+client_id = 'c2058ecfc76d75f'
+client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
+
+client = ImgurClient(client_id, client_secret)
+
 image_info = [
     {
         "id" : "34694102243_3370955cf9_z",
@@ -67,7 +79,21 @@ image_info = [
         "tags" : ["Los Angeles", "Hollywood", "California", "Volkswagen", "Beatle", "car"]
     }
 ]
- 
+def speech(label_text):
+    client_id = 'c2058ecfc76d75f'
+    client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
+
+    client = ImgurClient(client_id, client_secret)
+
+    text = label_text
+    tts = gTTS(text=text, lang='en-uk', slow=True)
+    tts.save("C:/labelReadOut.wav")
+    os.system("start C:/labelReadOut.wav")
+    item = client.get_image("nhTyj4d.jpg")
+    webbrowser.open_new(item.link)
+
+
+ #get_image(https://i.imgur.com/nhTyj4d.jpg)
 class Window(QWidget):
 
     def __init__(self):
@@ -96,6 +122,7 @@ class Window(QWidget):
         self.setLayout(windowLayout)
 
         resetBtn.clicked.connect(self.on_reset)
+        txtToSpBtn.clicked.connect(self.on_speech)
         
         self.show()
 
@@ -103,6 +130,13 @@ class Window(QWidget):
     def on_reset(self):
         print("Resetting")
         self.createGridLayout()
+
+    @pyqtSlot()
+    def on_speech(self):
+        label_text = "Click on all the dogs"
+        print("Text to speech")
+        speech(label_text)
+
             
             	
     def createGridLayout(self):
@@ -127,3 +161,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Window()
     sys.exit(app.exec_())
+
+
+
