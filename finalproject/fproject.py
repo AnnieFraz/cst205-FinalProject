@@ -1,3 +1,6 @@
+#Name: Anna Rasburn
+#Date: 4th Dec - Worked on speech function
+#Importing Libraries
 import sys, math, os, random, webbrowser, urllib, io
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
                              QGridLayout, QLineEdit, QHBoxLayout,
@@ -9,12 +12,18 @@ from PIL import Image
 from imgurpython import ImgurClient
 from gtts import gTTS
 
+from time import sleep
+import pyglet
+
+#API Credientals
 client_id = 'c2058ecfc76d75f'
 client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
 client = ImgurClient(client_id, client_secret)
 
+#Geting images from album
 pups = client.get_album_images("f0H0u")
 pup_list = []
+#Going through Album
 for item in pups:
     pup_list.append(item.link)
 notpups = client.get_album_images("XqBdP")
@@ -38,8 +47,19 @@ def ran():
 def speech(label_text):
     text = label_text
     tts = gTTS(text=text, lang='en-uk', slow=True)
-    tts.save("labelReadOut.wav")
-    os.system("start labelReadOut.wav")
+    filename = "labelReadOut.wav"
+    tts.save("labelReadOut.mp3")
+    os.system("start labelReadOut.mp3")
+    #f = TemporaryFile()
+    #tts.write_to_fp(f)
+    #f.open()
+    #f.close()
+    #music = pyglet.media.load("labelReadOut.wav", streaming=False)
+    #music.play()
+    #print(tts.duration())
+    #print(music)
+    sleep(20)
+    os.remove("labelReadOut.wav")
 
 class Window(QWidget):
     def __init__(self):
