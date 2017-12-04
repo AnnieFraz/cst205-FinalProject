@@ -1,4 +1,4 @@
-import sys, math, image_information, os, random
+import sys, math, os, random, webbrowser, urllib, io
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
                              QGridLayout, QLineEdit, QHBoxLayout,
                              QVBoxLayout, QComboBox, QGroupBox)
@@ -13,36 +13,38 @@ client_id = 'c2058ecfc76d75f'
 client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
 client = ImgurClient(client_id, client_secret)
 
+pups = client.get_album_images("f0H0u")
+pup_list = []
+for item in pups:
+    pup_list.append(item.link)
+notpups = client.get_album_images("XqBdP")
+not_list = []
+for item in notpups:
+    not_list.append(item.link)
+
+random_urls = []
+button_list = []
+
+def ran():
+    random_urls.clear()
+    sample = random.sample(range(len(pup_list)), 4)
+    for x in sample:
+        random_urls.append(pup_list[x])
+    sample = random.sample(range(len(not_list)), 5)
+    for x in sample:
+        random_urls.append(not_list[x])
+    random.shuffle(random_urls)
+
 def speech(label_text):
-    client_id = 'c2058ecfc76d75f'
-    client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
-
-    client = ImgurClient(client_id, client_secret)
-
     text = label_text
     tts = gTTS(text=text, lang='en-uk', slow=True)
     tts.save("labelReadOut.wav")
     os.system("start labelReadOut.wav")
-    #item = client.get_image("nhTyj4d.jpg")
-    #webbrowser.open_new(item.link)
-#get_image(https://i.imgur.com/nhTyj4d.jpg)
 
-filenames = image_information.getID()
-random_filenames = []
-button_list = []
-def ran():
-    random_filenames.clear()
-    numbers = []
-    while (len(random_filenames) < 10):
-        rand = random.randint(0,9)
-        if(rand not in numbers):
-            numbers.append(rand)
-            random_filenames.append(filenames[rand])
-    
 class Window(QWidget):
     def __init__(self):
         super().__init__()
-        self.title = 'PyQt5 layout'
+        self.title = 'Captcha'
         self.initUI()
         
     def initUI(self):
@@ -52,17 +54,20 @@ class Window(QWidget):
         txtToSpBtn = QPushButton("Activate Text To Speech")
         colorblindBtn = QPushButton("Colorblind")
         resetBtn = QPushButton("Reset Images")
+        submitBtn = QPushButton("Submit")
         windowLayout = QVBoxLayout()
+        windowLayout.addWidget(txtToSpBtn)
         windowLayout.addWidget(self.horizontalGroupBox)
         hlayout = QHBoxLayout()
-        hlayout.addWidget(txtToSpBtn)
         hlayout.addWidget(colorblindBtn)
+        hlayout.addWidget(submitBtn)
         hlayout.addWidget(resetBtn)
         windowLayout.addLayout(hlayout)
         self.setLayout(windowLayout)
         resetBtn.clicked.connect(self.on_reset)
         txtToSpBtn.clicked.connect(self.on_speech)
         colorblindBtn.clicked.connect(self.on_cb)
+        submitBtn.clicked.connect(self.on_submit)
         self.show()
 
     def createGridLayout(self):
@@ -72,8 +77,12 @@ class Window(QWidget):
         layout.setColumnStretch(2, 4)
         ran()
         for x in range(0, 9):
-            image_id = random_filenames[x]
-            pixmap = QPixmap(f"images/{image_id}.jpg")
+            URL = random_urls[x]
+            with urllib.request.urlopen(URL) as url:
+                f = io.BytesIO(url.read())
+            img = Image.open(f)
+            my_image = ImageQt(img)
+            pixmap = QPixmap.fromImage(my_image)
             pixmap = pixmap.scaled(150, 150)
             button = QPushButton()
             icon = QIcon()
@@ -90,13 +99,18 @@ class Window(QWidget):
         ran()
         x=0
         for b in button_list:
-            image_id = random_filenames[x]
-            x += 1
-            pixmap = QPixmap(f"images/{image_id}.jpg")
+            URL = random_urls[x]
+            with urllib.request.urlopen(URL) as url:
+                f = io.BytesIO(url.read())
+            img = Image.open(f)
+            my_image = ImageQt(img)
+            pixmap = QPixmap.fromImage(my_image)
             pixmap = pixmap.scaled(150, 150)
             icon = QIcon()
             icon.addPixmap(pixmap)
             b.setIcon(icon)
+            b.setStyleSheet("background-color: None")
+            x += 1
 
     @pyqtSlot()
     def on_speech(self):
@@ -108,20 +122,28 @@ class Window(QWidget):
     def on_cb(self):
         x=0
         for b in button_list:
-            image_id = random_filenames[x]
-            x += 1
-            im = Image.open(f"images/{image_id}.jpg")
-            im = image_information.grayscale(im)
-            my_image = ImageQt(im)
+            URL = random_urls[x]
+            with urllib.request.urlopen(URL) as url:
+                f = io.BytesIO(url.read())
+            img = Image.open(f).convert('L')
+            my_image = ImageQt(img)
             icon = QIcon()
             pixmap = QPixmap.fromImage(my_image)
             pixmap = pixmap.scaled(150, 150)
             icon.addPixmap(pixmap)
             b.setIcon(icon)
+            x += 1
     
     @pyqtSlot()
     def on_click(self):
-        print(self.sender())
+        if(self.sender().styleSheet() == ""):
+            self.sender().setStyleSheet("background-color: red")
+        else:
+            self.sender().setStyleSheet("background-color: None")
+    
+    @pyqtSlot()
+    def on_submit(self):
+        print("Submit")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
