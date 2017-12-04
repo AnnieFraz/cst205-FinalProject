@@ -1,0 +1,14 @@
+immutable -
+
+referential transparency -
+
+side effects - external data is modified so we can't predict the putput. 
+occurs when within
+
+map -
+
+filter - 
+
+Benefits of functional programming: faster run time(2x) relevent fro large datasets
+
+

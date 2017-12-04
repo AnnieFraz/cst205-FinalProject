@@ -4,7 +4,23 @@ from PyQt5.QtCore import pyqtSlot, QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from random import randint
 from PIL import Image
- 
+import urllib.request
+import io
+from PIL.ImageQt import ImageQt
+
+
+
+import webbrowser
+
+from gtts import gTTS
+import os
+
+from imgurpython import ImgurClient
+client_id = 'c2058ecfc76d75f'
+client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
+
+client = ImgurClient(client_id, client_secret)
+
 image_info = [
     {
         "id" : "34694102243_3370955cf9_z",
@@ -67,7 +83,21 @@ image_info = [
         "tags" : ["Los Angeles", "Hollywood", "California", "Volkswagen", "Beatle", "car"]
     }
 ]
- 
+def speech(label_text):
+    client_id = 'c2058ecfc76d75f'
+    client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
+
+    client = ImgurClient(client_id, client_secret)
+
+    text = label_text
+    tts = gTTS(text=text, lang='en-uk', slow=True)
+    tts.save("C:/labelReadOut.wav")
+    os.system("start C:/labelReadOut.wav")
+
+    webbrowser.open_new(item.link)
+
+
+ #get_image(https://i.imgur.com/nhTyj4d.jpg)
 class Window(QWidget):
 
     def __init__(self):
@@ -96,6 +126,7 @@ class Window(QWidget):
         self.setLayout(windowLayout)
 
         resetBtn.clicked.connect(self.on_reset)
+        txtToSpBtn.clicked.connect(self.on_speech)
         
         self.show()
 
@@ -103,6 +134,13 @@ class Window(QWidget):
     def on_reset(self):
         print("Resetting")
         self.createGridLayout()
+
+    @pyqtSlot()
+    def on_speech(self):
+        label_text = "Click on all the dogs"
+        print("Text to speech")
+        speech(label_text)
+
             
             	
     def createGridLayout(self):
@@ -113,13 +151,37 @@ class Window(QWidget):
         width = 150
         for x in range(0, 9):
             icon = QIcon()
-            image_id = image_info[randint(0,9)]['id']
-            pixmap = QPixmap(f"{image_id}.jpg")
-            icon.addPixmap(pixmap)
+            #image_id = image_info[randint(0,9)]['id']
+            items = client.get_album_images("f0H0u")
+            #pixmap = QPixmap(f"{image_id}.jpg")
+            #item = client.get_image("nhTyj4d")
+            URL = items[x].link
+            with urllib.request.urlopen(URL) as url:
+                f = io.BytesIO(url.read())
+            img = Image.open(f)
+            my_image = ImageQt(img)
+            pixmap = QPixmap.fromImage(my_image)
+            pixmap = pixmap.scaled(150, 150)
             button = QPushButton()
+            icon = QIcon()
+            icon.addPixmap(pixmap)
             button.setIcon(icon)
-            button.setIconSize(QSize(width,width))
+            button.setIconSize(QSize(150, 150))
             layout.addWidget(button)
+            #button.clicked.connect(self.on_click)
+            #button_list.append(button)
+            #testing
+            print("img",img)
+            print("f",f)
+            print("my_image",my_image)
+            print("pixmap", pixmap)
+
+            #pixmap = QPixmap(my_image)
+            #icon.addPixmap(pixmap)
+            #button = QPushButton()
+            #button.setIcon(icon)
+            #button.setIconSize(QSize(width, width))
+            #layout.addWidget(button)
         
         self.horizontalGroupBox.setLayout(layout)
 
@@ -127,3 +189,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Window()
     sys.exit(app.exec_())
+
+
+

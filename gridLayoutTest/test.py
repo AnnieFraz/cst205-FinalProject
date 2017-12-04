@@ -27,14 +27,15 @@ client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
 client = ImgurClient(client_id, client_secret)
 
 item = client.get_image("nhTyj4d.jpg")
-image_url = item.link
-image_byt = urlopen(image_url).read()
-image_b64 = base64.encodestring(image_byt)
-photo = tk.PhotoImage(data=image_b64)
+print(item.link)
+#image_url = client.get_image("nhTyj4d.jpg")
+#image_byt = urlopen(image_url).read()
+#image_b64 = base64.encodestring(image_byt)
+#photo = tk.PhotoImage(data=image_b64)
 # create a white canvas
-cv = tk.Canvas(bg='white')
-cv.pack(side='top', fill='both', expand='yes')
+#cv = tk.Canvas(bg='white')
+#cv.pack(side='top', fill='both', expand='yes')
 # put the image on the canvas with
 # create_image(xpos, ypos, image, anchor)
-cv.create_image(10, 10, image=photo, anchor='nw')
-root.mainloop()
+#cv.create_image(10, 10, image=photo, anchor='nw')
+#root.mainloop()
