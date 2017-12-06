@@ -67,6 +67,7 @@ class Window(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(100, 100, 100, 100)
+<<<<<<< HEAD
         self.createGridLayout()
         #Buttons
         txtToSpBtn = QPushButton("Activate Text To Speech")
@@ -74,8 +75,33 @@ class Window(QWidget):
         resetBtn = QPushButton("Reset Images")
         submitBtn = QPushButton("Submit")
         #Layout
+=======
+        self.createGridLayout()		
+		
+		#buttons & label being made here
+        txtLabel = QLabel("Click on all the Dogs")
+        speakerImg = Image.open("speaker.jpg")
+        speakerImage = ImageQt(speakerImg)
+        txtPixmap = QPixmap.fromImage(speakerImage)
+        txtPixmap = txtPixmap.scaled(25, 25)
+        txtToSpBtn = QPushButton()
+        txtIcon = QIcon()
+        txtIcon.addPixmap(txtPixmap)
+        txtToSpBtn.setIcon(txtIcon)
+        txtToSpBtn.setIconSize(QSize(25,25))
+        
+        colorblindBtn = QPushButton("Colorblind")
+        resetBtn = QPushButton("Reset Images")
+        submitBtn = QPushButton("Submit")
+		
+		#adding layouts and widgets
+>>>>>>> a5ff90a1a6a34c39fae95f8d72af3a6995c251c3
         windowLayout = QVBoxLayout()
-        windowLayout.addWidget(txtToSpBtn)
+        txtLayout = QHBoxLayout()
+        txtLayout.addWidget(txtToSpBtn)
+        txtLayout.addWidget(txtLabel)
+        windowLayout.addLayout(txtLayout)
+        #windowLayout.addWidget(txtToSpBtn)
         windowLayout.addWidget(self.horizontalGroupBox)
         hlayout = QHBoxLayout()
         hlayout.addWidget(colorblindBtn)
@@ -83,7 +109,12 @@ class Window(QWidget):
         hlayout.addWidget(resetBtn)
         windowLayout.addLayout(hlayout)
         self.setLayout(windowLayout)
+<<<<<<< HEAD
         #Button Functions
+=======
+		
+		#connect functions for the buttons
+>>>>>>> a5ff90a1a6a34c39fae95f8d72af3a6995c251c3
         resetBtn.clicked.connect(self.on_reset)
         txtToSpBtn.clicked.connect(self.on_speech)
         colorblindBtn.clicked.connect(self.on_cb)
