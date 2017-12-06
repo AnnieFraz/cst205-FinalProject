@@ -1,5 +1,6 @@
 #Name: Anna Rasburn
 #Date: 4th Dec - Worked on speech function
+
 #Importing Libraries
 import sys, math, os, random, webbrowser, urllib, io
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
@@ -21,12 +22,12 @@ client_secret = '5fe636c3e7a032b56b2120fe82eb3071c790c5ff'
 client = ImgurClient(client_id, client_secret)
 
 #Geting images from album
-pups = client.get_album_images("f0H0u")
+pups = client.get_album_images("f0H0u")#Album-Dogs
 pup_list = []
 #Going through Album
 for item in pups:
     pup_list.append(item.link)
-notpups = client.get_album_images("XqBdP")
+notpups = client.get_album_images("XqBdP")#Album-Not
 not_list = []
 for item in notpups:
     not_list.append(item.link)
@@ -34,6 +35,7 @@ for item in notpups:
 random_urls = []
 button_list = []
 
+#Random Function to generate different images when button is pressed
 def ran():
     random_urls.clear()
     sample = random.sample(range(len(pup_list)), 4)
@@ -44,23 +46,18 @@ def ran():
         random_urls.append(not_list[x])
     random.shuffle(random_urls)
 
+#Text to speech function, used when button is pressed
 def speech(label_text):
     text = label_text
     tts = gTTS(text=text, lang='en-uk', slow=True)
     filename = "labelReadOut.wav"
     tts.save("labelReadOut.mp3")
     os.system("start labelReadOut.mp3")
-    #f = TemporaryFile()
-    #tts.write_to_fp(f)
-    #f.open()
-    #f.close()
-    #music = pyglet.media.load("labelReadOut.wav", streaming=False)
-    #music.play()
-    #print(tts.duration())
-    #print(music)
-    sleep(20)
+    seconds = 20
+    sleep(seconds)
     os.remove("labelReadOut.wav")
 
+#GUI Creation
 class Window(QWidget):
     def __init__(self):
         super().__init__()
@@ -71,10 +68,12 @@ class Window(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(100, 100, 100, 100)
         self.createGridLayout()
+        #Buttons
         txtToSpBtn = QPushButton("Activate Text To Speech")
         colorblindBtn = QPushButton("Colorblind")
         resetBtn = QPushButton("Reset Images")
         submitBtn = QPushButton("Submit")
+        #Layout
         windowLayout = QVBoxLayout()
         windowLayout.addWidget(txtToSpBtn)
         windowLayout.addWidget(self.horizontalGroupBox)
@@ -84,6 +83,7 @@ class Window(QWidget):
         hlayout.addWidget(resetBtn)
         windowLayout.addLayout(hlayout)
         self.setLayout(windowLayout)
+        #Button Functions
         resetBtn.clicked.connect(self.on_reset)
         txtToSpBtn.clicked.connect(self.on_speech)
         colorblindBtn.clicked.connect(self.on_cb)
@@ -133,7 +133,7 @@ class Window(QWidget):
             x += 1
 
     @pyqtSlot()
-    def on_speech(self):
+    def on_speech(self, text):
         label_text = "Click on all the dogs"
         print("Text to speech")
         speech(label_text)
