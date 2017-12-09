@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Success</title>
+  <meta name="Anna Rasburn" content="SitePoint">
+
+  
+</head>
+
+<body>
+{% extends "bootstrap/base.html" %}
+  {% block navbar %}
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <div class="navbar-brand">
+        Final Project by Cody, Devin and Anna
+      </div>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      
+    </ul>
+  </div>
+</nav>
+
+{% endblock %}
+{% block content %}
+<h1>{{data[doggo]['text']}}</h1>
+<img src="/static/{{data[doggo]['id']}}.gif" alt={{data[doggo]['text']}}>
+{% endblock %}
+</body>
+</html>

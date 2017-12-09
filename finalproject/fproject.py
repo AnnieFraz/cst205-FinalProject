@@ -32,19 +32,28 @@ not_list = []
 for item in notpups:
     not_list.append(item.link)
 
-random_urls = []
-button_list = []
+random_urls = {}
+random_keys = []
+
+button_list = {}
+clicked_list = []
 
 #Random Function to generate different images when button is pressed
 def ran():
     random_urls.clear()
-    sample = random.sample(range(len(pup_list)), 4)
+    random_keys.clear()
+    pupnum = random.randint(3, 6)
+    notnum = 9 - pupnum
+    sample = random.sample(range(len(pup_list)), pupnum)
     for x in sample:
-        random_urls.append(pup_list[x])
-    sample = random.sample(range(len(not_list)), 5)
+        random_urls[pup_list[x]] = 1
+    sample = random.sample(range(len(not_list)), notnum)
     for x in sample:
-        random_urls.append(not_list[x])
-    random.shuffle(random_urls)
+        random_urls[not_list[x]] = 0
+    keys = list(random_urls.keys())
+    random.shuffle(keys)
+    for key in keys:
+        random_keys.append(key)
 
 #Text to speech function, used when button is pressed
 def speech(label_text):
@@ -58,15 +67,20 @@ def speech(label_text):
 
 #GUI Creation
 class Window(QWidget):
+<<<<<<< HEAD
     text = " lol "
+=======
+    colorblind = False
+>>>>>>> f2734fef9f4404f3bef2c7a83a78b1758046877f
     def __init__(self):
         super().__init__()
-        self.title = 'Captcha'
+        self.title = 'Captcha Bot'
         self.initUI()
         
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(100, 100, 100, 100)
+<<<<<<< HEAD
 
         self.createGridLayout()
         #Buttons
@@ -76,6 +90,9 @@ class Window(QWidget):
         submitBtn = QPushButton("Submit")
         #Layout
 
+=======
+<<<<<<< HEAD
+>>>>>>> f2734fef9f4404f3bef2c7a83a78b1758046877f
         self.createGridLayout()		
 		
 		#buttons & label being made here
@@ -93,6 +110,11 @@ class Window(QWidget):
         txtToSpBtn.setIconSize(QSize(25,25))
         
         colorblindBtn = QPushButton("Colorblind")
+=======
+        self.createGridLayout()
+        txtToSpBtn = QPushButton("Activate Text To Speech")
+        colorblindBtn = QPushButton("Colorblind Mode: Off")
+>>>>>>> 17c3cd28a331196a104705c831d865a580758693
         resetBtn = QPushButton("Reset Images")
         submitBtn = QPushButton("Submit")
 		
@@ -127,39 +149,38 @@ class Window(QWidget):
         layout.setColumnStretch(2, 4)
         ran()
         for x in range(0, 9):
-            URL = random_urls[x]
-            with urllib.request.urlopen(URL) as url:
-                f = io.BytesIO(url.read())
-            img = Image.open(f)
-            my_image = ImageQt(img)
-            pixmap = QPixmap.fromImage(my_image)
-            pixmap = pixmap.scaled(150, 150)
             button = QPushButton()
-            icon = QIcon()
-            icon.addPixmap(pixmap)
-            button.setIcon(icon)
+            button.setIcon(self.icons(x, False))
             button.setIconSize(QSize(150, 150))
             layout.addWidget(button)
             button.clicked.connect(self.on_click)
-            button_list.append(button)
+            button_list[button] = random_urls[random_keys[x]]
         self.horizontalGroupBox.setLayout(layout)
-
+    
+    def icons(self, x, cb):
+        URL = random_keys[x]
+        with urllib.request.urlopen(URL) as url:
+            f = io.BytesIO(url.read())
+        if not cb:
+            img = Image.open(f)
+        else:
+            img = Image.open(f).convert("L")
+        my_image = ImageQt(img)
+        pixmap = QPixmap.fromImage(my_image)
+        pixmap = pixmap.scaled(150, 150)
+        icon = QIcon()
+        icon.addPixmap(pixmap)
+        return icon
+        
     @pyqtSlot()
     def on_reset(self):
         ran()
         x=0
-        for b in button_list:
-            URL = random_urls[x]
-            with urllib.request.urlopen(URL) as url:
-                f = io.BytesIO(url.read())
-            img = Image.open(f)
-            my_image = ImageQt(img)
-            pixmap = QPixmap.fromImage(my_image)
-            pixmap = pixmap.scaled(150, 150)
-            icon = QIcon()
-            icon.addPixmap(pixmap)
-            b.setIcon(icon)
-            b.setStyleSheet("background-color: None")
+        for button in button_list:
+            button.setIcon(self.icons(x, Window.colorblind))
+            button.setStyleSheet("background-color: None")
+            button_list[button] = random_urls[random_keys[x]]
+            clicked_list.clear()
             x += 1
 
     @pyqtSlot()
@@ -172,30 +193,42 @@ class Window(QWidget):
         
     @pyqtSlot()
     def on_cb(self):
-        x=0
-        for b in button_list:
-            URL = random_urls[x]
-            with urllib.request.urlopen(URL) as url:
-                f = io.BytesIO(url.read())
-            img = Image.open(f).convert('L')
-            my_image = ImageQt(img)
-            icon = QIcon()
-            pixmap = QPixmap.fromImage(my_image)
-            pixmap = pixmap.scaled(150, 150)
-            icon.addPixmap(pixmap)
-            b.setIcon(icon)
-            x += 1
+        x = 0
+        if(Window.colorblind == False):
+            self.sender().setText("Colorblind Mode: On")
+            for button in button_list:
+                button.setIcon(self.icons(x, True))
+                x += 1
+                Window.colorblind = True
+        else:
+            self.sender().setText("Colorblind Mode: Off")
+            for button in button_list:
+                button.setIcon(self.icons(x, False))
+                x += 1
+            Window.colorblind = False
     
     @pyqtSlot()
     def on_click(self):
-        if(self.sender().styleSheet() == ""):
-            self.sender().setStyleSheet("background-color: red")
-        else:
+        if(self.sender().styleSheet() == "background-color: red"):
             self.sender().setStyleSheet("background-color: None")
+            clicked_list.remove(button_list[self.sender()])
+        else:
+            self.sender().setStyleSheet("background-color: red")
+            clicked_list.append(button_list[self.sender()])
     
     @pyqtSlot()
     def on_submit(self):
-        print("Submit")
+        correct = 0
+        values = button_list.values()
+        for x in values:
+            if(x == 1):
+                correct += 1
+        if (0 in clicked_list):
+            print("FAILURE")
+        elif (clicked_list.count(1) == correct):
+            print("PASSED")
+        else:
+            print("FAILURE")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
