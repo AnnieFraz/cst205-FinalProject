@@ -5,14 +5,15 @@
   <meta charset="utf-8">
 
   <title>Success</title>
-  <meta name="Anna Rasburn" content="SitePoint">
+  <meta name="Anna Rasburn" description="Success page">
 
   
 </head>
 
 <body>
-{% extends "bootstrap/base.html" %}
-  {% block navbar %}
+{% extends "bootstrap/base.html" %} <!--Applies CSS-->
+{% block navbar %}
+<!--Nav bar-->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -28,8 +29,8 @@
 
 {% endblock %}
 {% block content %}
-<h1>{{dog_info[randomInt]['text']}}</h1>
-<img src="/static/{{dog_info[randomInt]['id']}}.jpg" alt={{dog_info[randomInt]['text']}}>
-
+<h1>{{data[doggo]['text']}}</h1> <!--Gets data from dictionary-->
+<img src="/static/{{data[doggo]['id']}}.jpg" alt={{data[doggo]['text']}}> <!--Gets image from dictionary-->
+{% endblock %}
 </body>
 </html>
