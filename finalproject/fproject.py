@@ -50,7 +50,6 @@ def ran():
 def speech(label_text):
     text = label_text
     tts = gTTS(text=text, lang='en-uk', slow=True)
-    filename = "labelReadOut.wav"
     tts.save("labelReadOut.mp3")
     os.system("start labelReadOut.mp3")
     seconds = 20
@@ -59,6 +58,7 @@ def speech(label_text):
 
 #GUI Creation
 class Window(QWidget):
+    text = " lol "
     def __init__(self):
         super().__init__()
         self.title = 'Captcha'
@@ -67,7 +67,7 @@ class Window(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(100, 100, 100, 100)
-<<<<<<< HEAD
+
         self.createGridLayout()
         #Buttons
         txtToSpBtn = QPushButton("Activate Text To Speech")
@@ -75,11 +75,13 @@ class Window(QWidget):
         resetBtn = QPushButton("Reset Images")
         submitBtn = QPushButton("Submit")
         #Layout
-=======
+
         self.createGridLayout()		
 		
 		#buttons & label being made here
-        txtLabel = QLabel("Click on all the Dogs")
+        LabelTest = "Click on all the Dogs"
+        txtLabel = QLabel(LabelTest)
+        #text = Window.txtlabel.text()
         speakerImg = Image.open("speaker.jpg")
         speakerImage = ImageQt(speakerImg)
         txtPixmap = QPixmap.fromImage(speakerImage)
@@ -95,13 +97,11 @@ class Window(QWidget):
         submitBtn = QPushButton("Submit")
 		
 		#adding layouts and widgets
->>>>>>> a5ff90a1a6a34c39fae95f8d72af3a6995c251c3
         windowLayout = QVBoxLayout()
         txtLayout = QHBoxLayout()
         txtLayout.addWidget(txtToSpBtn)
         txtLayout.addWidget(txtLabel)
         windowLayout.addLayout(txtLayout)
-        #windowLayout.addWidget(txtToSpBtn)
         windowLayout.addWidget(self.horizontalGroupBox)
         hlayout = QHBoxLayout()
         hlayout.addWidget(colorblindBtn)
@@ -109,12 +109,11 @@ class Window(QWidget):
         hlayout.addWidget(resetBtn)
         windowLayout.addLayout(hlayout)
         self.setLayout(windowLayout)
-<<<<<<< HEAD
+
         #Button Functions
-=======
+
 		
 		#connect functions for the buttons
->>>>>>> a5ff90a1a6a34c39fae95f8d72af3a6995c251c3
         resetBtn.clicked.connect(self.on_reset)
         txtToSpBtn.clicked.connect(self.on_speech)
         colorblindBtn.clicked.connect(self.on_cb)
@@ -164,9 +163,11 @@ class Window(QWidget):
             x += 1
 
     @pyqtSlot()
-    def on_speech(self, text):
-        label_text = "Click on all the dogs"
+    def on_speech(self):
+        label_text = Window.text
+        #label_text = str(LabelTest)
         print("Text to speech")
+        print(label_text)
         speech(label_text)
         
     @pyqtSlot()
