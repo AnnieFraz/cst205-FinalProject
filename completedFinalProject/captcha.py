@@ -3,8 +3,8 @@
 #Authors: Anna, Devin, Cody
 #Date: 10th December 2017
 #Who did what:
-#Anna: API, text-to-speech, flask-app, colour manipulation
-#Devin: capcha theory and functionailty, buttons to work, image background
+#Anna: Imgur API, text-to-speech, flask-app, colour manipulation
+#Devin: capcha theory and functionailty, (Colorblind Mode, Reset and Submit) buttons, button icon image setting & selection
 #Cody: GUI, grid layout, flask-app, capcha theory
 
 import sys, math, os, random, webbrowser, urllib, io
@@ -87,6 +87,7 @@ class Window(QWidget):
 
         # buttons & label being made here
         txtLabel = QLabel(label_text)
+        txtLabel.setStyleSheet("font: 22pt Arial MS")
         speakerImg = Image.open("speaker.jpg")
         speakerImage = ImageQt(speakerImg)
         txtPixmap = QPixmap.fromImage(speakerImage)
@@ -94,20 +95,21 @@ class Window(QWidget):
         txtToSpBtn = QPushButton()
         txtIcon = QIcon()
         txtIcon.addPixmap(txtPixmap)
-        txtToSpBtn.setIcon(txtIcon)  # setting an speaker icon
+        txtToSpBtn.setIcon(txtIcon)  # setting the speaker icon
         txtToSpBtn.setIconSize(QSize(25, 25))
         txtToSpBtn.setFixedSize(30, 30)  # resizing the button for the speaker icon
 
         #Buttons declaration
-        #txtToSpBtn = QPushButton("Activate Text To Speech")
         colorblindBtn = QPushButton("Colorblind Mode: Off")
         resetBtn = QPushButton("Reset Images")
         submitBtn = QPushButton("Submit")
 
-        #Adding to the GUI
+        #Adding Layouts and Widgets to the GUI
         windowLayout = QVBoxLayout()
-        windowLayout.addWidget(txtToSpBtn)
-        windowLayout.addWidget(txtLabel)
+        hlayout2 = QHBoxLayout()
+        hlayout2.addWidget(txtToSpBtn)
+        hlayout2.addWidget(txtLabel)
+        windowLayout.addLayout(hlayout2)
         windowLayout.addWidget(self.horizontalGroupBox)
         hlayout = QHBoxLayout()
         hlayout.addWidget(colorblindBtn)
@@ -116,14 +118,15 @@ class Window(QWidget):
         windowLayout.addLayout(hlayout)
         self.setLayout(windowLayout)
 
-        #Button Functions
+        #Button Signal Slots
         resetBtn.clicked.connect(self.on_reset)
         txtToSpBtn.clicked.connect(self.on_speech)
         colorblindBtn.clicked.connect(self.on_cb)
         submitBtn.clicked.connect(self.on_submit)
+        
         self.show()
 
-    #Creates layout
+    #Creates layout and adds buttons
     def createGridLayout(self):
         self.horizontalGroupBox = QGroupBox()
         layout = QGridLayout()
@@ -139,11 +142,12 @@ class Window(QWidget):
             button_list[button] = random_urls[random_keys[x]]
         self.horizontalGroupBox.setLayout(layout)
 
-    #Converting to black and white (colourblind)
+    #Sets each button icon to a random image
     def icons(self, x, cb):
         URL = random_keys[x]
         with urllib.request.urlopen(URL) as url:
             f = io.BytesIO(url.read())
+        #Checks if colorblind mode is on or off
         if not cb:
             img = Image.open(f)
         else:
@@ -155,7 +159,8 @@ class Window(QWidget):
         icon.addPixmap(pixmap)
         return icon
 
-    #Allows user to change mind about selection of button
+    #Allows user to change mind about selection of buttons
+    #Randomizes the captcha images again
     @pyqtSlot()
     def on_reset(self):
         ran()
@@ -182,7 +187,7 @@ class Window(QWidget):
             for button in button_list:
                 button.setIcon(self.icons(x, True))
                 x += 1
-                Window.colorblind = True
+            Window.colorblind = True
         else:
             self.sender().setText("Colorblind Mode: Off")
             for button in button_list:
@@ -190,7 +195,7 @@ class Window(QWidget):
                 x += 1
             Window.colorblind = False
 
-    #Selecting button adding background
+    #Selecting button adds background color (or removes)
     @pyqtSlot()
     def on_click(self):
         if (self.sender().styleSheet() == "background-color: red"):
@@ -200,23 +205,35 @@ class Window(QWidget):
             self.sender().setStyleSheet("background-color: red")
             clicked_list.append(button_list[self.sender()])
 
+    #Resets the captcha images     
+    def reset(self):
+        ran()
+        x=0
+        for button in button_list:
+            button.setIcon(self.icons(x, Window.colorblind))
+            button.setStyleSheet("background-color: None")
+            button_list[button] = random_urls[random_keys[x]]
+            clicked_list.clear()
+            x += 1
+            
     #Adds selctions to list and sees if you are successful
+    #If only dogs are clicked, GUI is hidden, browser opens, and python stops
+    #If failure to pass, resets random images and clears button background
     @pyqtSlot()
     def on_submit(self):
         correct = 0
         values = button_list.values()
         for x in values:
-            if (x == 1):
+            if(x == 1):
                 correct += 1
-        if (0 in clicked_list): #All dogs are not clicked
-            print("FAILURE")
-        elif (clicked_list.count(1) == correct): #All dogs are selected
-            print("PASSED")
-            webbrowser.open('https://www.google.co.uk/')
-            print("Goes to website")
+        if (0 in clicked_list):
+            self.reset()
+        elif (clicked_list.count(1) == correct):
+            self.hide()
+            webbrowser.open_new("https://google.com/")
+            sys.exit()
         else:
-            print("FAILURE")
-
+            self.reset()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
