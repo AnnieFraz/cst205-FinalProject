@@ -67,11 +67,8 @@ def speech(label_text):
 
 #GUI Creation
 class Window(QWidget):
-<<<<<<< HEAD
     text = " lol "
-=======
     colorblind = False
->>>>>>> f2734fef9f4404f3bef2c7a83a78b1758046877f
     def __init__(self):
         super().__init__()
         self.title = 'Captcha Bot'
@@ -80,7 +77,7 @@ class Window(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(100, 100, 100, 100)
-<<<<<<< HEAD
+
 
         self.createGridLayout()
         #Buttons
@@ -90,9 +87,6 @@ class Window(QWidget):
         submitBtn = QPushButton("Submit")
         #Layout
 
-=======
-<<<<<<< HEAD
->>>>>>> f2734fef9f4404f3bef2c7a83a78b1758046877f
         self.createGridLayout()		
 		
 		#buttons & label being made here
@@ -110,11 +104,11 @@ class Window(QWidget):
         txtToSpBtn.setIconSize(QSize(25,25))
         
         colorblindBtn = QPushButton("Colorblind")
-=======
+
         self.createGridLayout()
         txtToSpBtn = QPushButton("Activate Text To Speech")
         colorblindBtn = QPushButton("Colorblind Mode: Off")
->>>>>>> 17c3cd28a331196a104705c831d865a580758693
+
         resetBtn = QPushButton("Reset Images")
         submitBtn = QPushButton("Submit")
 		

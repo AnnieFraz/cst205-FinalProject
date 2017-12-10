@@ -1,2 +1,0 @@
-#KK
-print("hello git")

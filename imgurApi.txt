@@ -1,3 +1,0 @@
-client ID - c2058ecfc76d75f
-
-Client Secret - 5fe636c3e7a032b56b2120fe82eb3071c790c5ff
