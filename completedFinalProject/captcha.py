@@ -6,6 +6,7 @@
 #Anna: Imgur API, text-to-speech, flask-app, colour manipulation
 #Devin: capcha theory and functionailty, (Colorblind Mode, Reset and Submit) buttons, button icon image setting & selection
 #Cody: GUI, grid layout, flask-app, capcha theory
+#GitHub Link : https://github.com/AnnieFraz/cst205-FinalProject
 
 import sys, math, os, random, webbrowser, urllib, io
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
