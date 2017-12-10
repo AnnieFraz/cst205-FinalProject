@@ -12,7 +12,7 @@
 * December 10, 2017
 #
 ## How to run program
-* Open and run the complitedFinalProject/captcha.py file in a python interpreter.
+* Open and run the completedFinalProject/captcha.py file in a python interpreter.
 #
 ## Libraries needed 
 * webbrowser, urllib, os, sys, io, PyQt5, PILLOW, imgurpython, gtts, time
