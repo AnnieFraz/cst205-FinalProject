@@ -135,7 +135,7 @@ class Window(QWidget):
             for button in button_list:
                 button.setIcon(self.icons(x, True))
                 x += 1
-                Window.colorblind = True
+            Window.colorblind = True
         else:
             self.sender().setText("Colorblind Mode: Off")
             for button in button_list:
