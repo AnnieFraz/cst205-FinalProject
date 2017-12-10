@@ -199,7 +199,7 @@ class Window(QWidget):
             for button in button_list:
                 button.setIcon(self.icons(x, True))
                 x += 1
-                Window.colorblind = True
+            Window.colorblind = True
         else:
             self.sender().setText("Colorblind Mode: Off")
             for button in button_list:
@@ -215,6 +215,16 @@ class Window(QWidget):
         else:
             self.sender().setStyleSheet("background-color: red")
             clicked_list.append(button_list[self.sender()])
+            
+    def reset(self):
+        ran()
+        x=0
+        for button in button_list:
+            button.setIcon(self.icons(x, Window.colorblind))
+            button.setStyleSheet("background-color: None")
+            button_list[button] = random_urls[random_keys[x]]
+            clicked_list.clear()
+            x += 1
     
     @pyqtSlot()
     def on_submit(self):
@@ -224,11 +234,11 @@ class Window(QWidget):
             if(x == 1):
                 correct += 1
         if (0 in clicked_list):
-            print("FAILURE")
+            self.reset()
         elif (clicked_list.count(1) == correct):
-            print("PASSED")
+            webbrowser.open_new("https://google.com/")
         else:
-            print("FAILURE")
+            self.reset()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
